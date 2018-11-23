@@ -107,7 +107,7 @@ func TestGolayInit(t *testing.T) {
 
 func TestHammingMoufang(t *testing.T) {
 	for i := 0; i < 1000; i++ {
-		cl, err := NewCL(CLParams{Basis: HammingBasis, Theta: RandomTheta})
+		cl, err := NewCL(CLParams{Basis: HammingBasis, Random: true})
 		if err != nil {
 			t.Fatalf("Failed to create CL: %s", err)
 		}
@@ -120,7 +120,7 @@ func TestHammingMoufang(t *testing.T) {
 
 func TestHammingMoufang2(t *testing.T) {
 	for i := 0; i < 1000; i++ {
-		cl, err := NewCL(CLParams{Basis: HammingBasis, Theta: RandomTheta})
+		cl, err := NewCL(CLParams{Basis: HammingBasis, Random: true})
 		if err != nil {
 			t.Fatalf("Failed to create CL: %s", err)
 		}
@@ -227,7 +227,7 @@ func TestHammingTheta(t *testing.T) {
 
 	for i := 0; i < 1000; i++ {
 		basis := HammingBasis
-		cl, err := NewCL(CLParams{Basis: basis, Theta: RandomTheta})
+		cl, err := NewCL(CLParams{Basis: basis, Random: true})
 		if err != nil {
 			t.Fatalf("Failed to create CL: %s", err)
 		}
@@ -288,6 +288,32 @@ func TestHammingTheta(t *testing.T) {
 					}
 				}
 			}
+		}
+	}
+}
+
+func TestDecompose(t *testing.T) {
+	cl, err := NewCL(CLParams{Basis: GolaySplitBasis})
+	if err != nil {
+		t.Fatalf("Failed to create CL: %s", err)
+	}
+	for _, vec := range cl.VectorSpace() {
+		_, _, err := cl.Decompose(vec)
+		if err != nil {
+			t.Fatalf("Error in Decompose(): %s", err)
+		}
+	}
+}
+
+func TestDecomposeHamming(t *testing.T) {
+	cl, err := NewCL(CLParams{Basis: HammingBasis})
+	if err != nil {
+		t.Fatalf("Failed to create CL: %s", err)
+	}
+	for _, vec := range cl.VectorSpace() {
+		_, _, err := cl.Decompose(vec)
+		if err != nil {
+			t.Fatalf("Error in Decompose(): %s", err)
 		}
 	}
 }
@@ -406,6 +432,7 @@ func BenchmarkVerifyBasisGolay(b *testing.B) {
 	if err != nil {
 		b.Fatalf("Failed to create CL: %s", err)
 	}
+	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		err = cl.VerifyBasis()
 		if err != nil {
@@ -483,6 +510,7 @@ func BenchmarkLoopElemsHamming(b *testing.B) {
 	if err != nil {
 		b.Fatalf("Failed to create CL: %s", err)
 	}
+	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		cl.LoopElems()
 	}
@@ -493,6 +521,7 @@ func BenchmarkLoopElemsGolay(b *testing.B) {
 	if err != nil {
 		b.Fatalf("Failed to create CL: %s", err)
 	}
+	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
 		cl.LoopElems()
 	}

@@ -23,12 +23,12 @@ const CELL_LABELS = false
 func main() {
 
 	basis := codeloops.GolayBasis
-	choose := 7
+	choose := 5
 
 	subspaces := 0
 	codeloops.SetCombinationsWithoutReplacement(uint(len(basis)), uint(choose), func(s []uint) {
 		// such a lazy way to do this, but has the advantage that the number
-		// here will definitely match to loop below
+		// here will definitely match the loop below
 		subspaces++
 	})
 	xreps := int(math.Ceil(math.Sqrt(float64(subspaces))))
@@ -96,7 +96,7 @@ func main() {
 		for _, idx := range s {
 			thisBasis = append(thisBasis, codeloops.GolayBasis[idx])
 		}
-		cl, _ := codeloops.NewCL(codeloops.CLParams{Basis: thisBasis, Theta: 0})
+		cl, _ := codeloops.NewCL(codeloops.CLParams{Basis: thisBasis})
 
 		if labelH > 0 {
 			label := "Basis:"
@@ -106,7 +106,7 @@ func main() {
 			// Drawing two strings in a whitespace height of labelHf+borderWf,
 			// so one is vertically centred at h/4, one at 3h/4
 			dc.DrawStringAnchored(label, tlXf+borderWf, tlYf+(labelHf+borderWf)/4, 0, 0.5)
-			dc.DrawStringAnchored(fmt.Sprintf("Theta: %s", cl.ThetaPath), tlXf+borderWf, tlYf+(labelHf+borderWf)*3/4, 0, 0.5)
+			dc.DrawStringAnchored(fmt.Sprintf("Seed: %s", cl.Seed), tlXf+borderWf, tlYf+(labelHf+borderWf)*3/4, 0, 0.5)
 		}
 
 		res := new(codeloops.CLElem)
